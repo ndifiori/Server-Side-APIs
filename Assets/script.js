@@ -5,9 +5,6 @@ var searchHistory = [];
 var weatherApiRootUrl = 'https://api.openweathermap.org';
 var weatherApiKey = '65f52f669b7ae14b669109a38508fa50';
 
-
-
-
 //////////////////////////////////////////////////////
 
 // this will get the container that holds the users search
@@ -23,19 +20,11 @@ var forecastContainer = document.getElementById('forecast');
 // this will get the container to hold the history of the past searches 
 var searchHistoryContainer = document.getElementById('history');
 
-
-
-
-
 //////////////////////////////////////////////////////
 
 // these will add functionality to dayjs 
 dayjs.extend(window.dayjs_plugin_utc);
 dayjs.extend(window.dayjs_plugin_timezone);
-
-
-
-
 
 //////////////////////////////////////////////////////
 
@@ -60,10 +49,6 @@ function submitForm(event) {
   // this will clear our input value
   searchInput.value = '';
 }
-
-
-
-
 
 //////////////////////////////////////////////////////
 
@@ -107,7 +92,6 @@ function fetchCoordinates(search) {
     });
 }
 
-
 //////////////////////////////////////////////////////
 
 // our 3rd step is to deal with the data from the api
@@ -129,8 +113,8 @@ function fetchWeather(location) {
   fetch(apiUrl)
 
     // this takes the call response and store it as a javascript object
-    .then(function (res) {
-      return res.json();
+    .then(function (response) {
+      return response.json();
     })
 
     // this will take the data and pass it through a new function that displays our city and data about it
@@ -144,7 +128,6 @@ function fetchWeather(location) {
       console.error(err);
     });
 }
-
 
 //////////////////////////////////////////////////////
 
@@ -167,7 +150,6 @@ function appendToHistory(search) {
   renderSearchHistory();
 }
 
-
 //////////////////////////////////////////////////////
 
 // our 5th step is to place our location data on the screen when we run the functions within this function
@@ -181,9 +163,7 @@ function renderItems(city, data) {
   renderForecast(data.list);
 }
 
-
 //////////////////////////////////////////////////////
-
 
 // our 6th step is now to display our past search history
 
@@ -216,7 +196,6 @@ function renderSearchHistory() {
   }
 }
 
-
 //////////////////////////////////////////////////////
 
 
@@ -225,15 +204,17 @@ function renderSearchHistory() {
 // this function takes in 2 parameters city and weather
 function renderCurrentWeather(city, weather) {
 
-  
+  // lets create variables 
   var date = dayjs().format('M/D/YYYY');
-  // Store response data from our fetch request in variables
+
+  // this will take our data from the fetch we made earlier and store it as variables
   var tempF = weather.main.temp;
   var windMph = weather.wind.speed;
   var humidity = weather.main.humidity;
   var iconUrl = `https://openweathermap.org/img/w/${weather.weather[0].icon}.png`;
   var iconDescription = weather.weather[0].description || weather[0].main;
 
+  // this will initiate variables that create elements
   var card = document.createElement('div');
   var cardBody = document.createElement('div');
   var heading = document.createElement('h2');
@@ -242,6 +223,7 @@ function renderCurrentWeather(city, weather) {
   var windEl = document.createElement('p');
   var humidityEl = document.createElement('p');
 
+  // this will now set attributes to our new elements
   card.setAttribute('class', 'card');
   cardBody.setAttribute('class', 'card-body');
   card.append(cardBody);
