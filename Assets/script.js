@@ -1,11 +1,8 @@
 
 // this is how we are going to interact with the API 
-
 var searchHistory = [];
 var weatherApiRootUrl = 'https://api.openweathermap.org';
 var weatherApiKey = '65f52f669b7ae14b669109a38508fa50';
-
-//////////////////////////////////////////////////////
 
 // this will get the container that holds the users search
 var searchForm = document.getElementById('search-form');
@@ -20,13 +17,9 @@ var forecastContainer = document.getElementById('forecast');
 // this will get the container to hold the history of the past searches 
 var searchHistoryContainer = document.getElementById('history');
 
-//////////////////////////////////////////////////////
-
 // these will add functionality to dayjs 
 dayjs.extend(window.dayjs_plugin_utc);
 dayjs.extend(window.dayjs_plugin_timezone);
-
-//////////////////////////////////////////////////////
 
 // 1st let's create a function that will enable the search button to work 
 
@@ -49,8 +42,6 @@ function submitForm(event) {
   // this will clear our input value
   searchInput.value = '';
 }
-
-//////////////////////////////////////////////////////
 
 // 2nd let's create a function that takes the user search value and makes a call to the API
 
@@ -92,8 +83,6 @@ function fetchCoordinates(search) {
     });
 }
 
-//////////////////////////////////////////////////////
-
 // our 3rd step is to deal with the data from the api
 
 // using the location as the parameter that we stored above as the data that was zero indexed
@@ -129,12 +118,10 @@ function fetchWeather(location) {
     });
 }
 
-//////////////////////////////////////////////////////
-
 // this is our 4th step to place our search into the local storage
 function appendToHistory(search) {
 
-  // if the search history array we created above does not have an index of search that doesn't equal -1 stop the function
+  // if there is no search input then end the function
   if (searchHistory.indexOf(search) !== -1) {
     return;
   }
@@ -150,8 +137,6 @@ function appendToHistory(search) {
   renderSearchHistory();
 }
 
-//////////////////////////////////////////////////////
-
 // our 5th step is to place our location data on the screen when we run the functions within this function
 
 function renderItems(city, data) {
@@ -162,8 +147,6 @@ function renderItems(city, data) {
   // this will take our data.list into our next function - our 8th step 
   renderForecast(data.list);
 }
-
-//////////////////////////////////////////////////////
 
 // our 6th step is now to display our past search history
 
@@ -195,9 +178,6 @@ function renderSearchHistory() {
     searchHistoryContainer.append(btn);
   }
 }
-
-//////////////////////////////////////////////////////
-
 
 // now our 7th step is to display the current weather
 
@@ -259,8 +239,6 @@ function renderCurrentWeather(city, weather) {
   todayContainer.append(card);
 }
 
-//////////////////////////////////////////////////////
-
 // this is our 8th step that will display the 5 day forecast
 
 function renderForecast(dailyForecast) {
@@ -303,8 +281,6 @@ function renderForecast(dailyForecast) {
     }
   }
 }
-
-//////////////////////////////////////////////////////
 
 // our 9th step is to create a function that holds our previous function data
 
@@ -372,35 +348,41 @@ function renderForecastCard(forecast) {
 
 // okay so here we are in our last couple steps
 
-// add functionality to our past searches
-
 //////////////////////////////////////////////////////
 
-// Function to get search history from local storage
+// our 10th step is to get our previous search history from local storage 
+
 function initSearchHistory() {
+
+  // create a variable that gets our key value from local storage
   var storedHistory = localStorage.getItem('search-history');
+
+  // we will parse our string into an object and set it equal to our searchhistory array in our global variables
   if (storedHistory) {
     searchHistory = JSON.parse(storedHistory);
   }
+
+  // run our rendersearchhistory function to display on the app
   renderSearchHistory();
 }
 
+// our last and 11th step to begin our list of functions all over for the items in our past search button list
 
-//////////////////////////////////////////////////////
+function handleSearchHistoryClick(event) {
 
-function handleSearchHistoryClick(e) {
-  // Don't do search if current elements is not a search history button
-  if (!e.target.matches('.btn-history')) {
+  // conditional to check that if the place we clicked doesn't match our button history to end the function
+  if (!event.target.matches('.btn-history')) {
     return;
   }
 
-  var btn = e.target;
+  var btn = event.target;
   var search = btn.getAttribute('data-search');
-  fetchCoords(search);
+
+  // this will run our functions from the top
+  fetchCoordinates(search);
 }
 
-
-//////////////////////////////////////////////////////
+// now it's time to run our functions
 
 initSearchHistory();
 searchForm.addEventListener('submit', submitForm);
