@@ -67,7 +67,7 @@ function fetchCoordinates(search) {
     .then(function (response) {
 
       // this function will grab the respone and turn it into a javascript object
-      return res.json();
+      return response.json();
     })
 
     // this will pass our new retrieved data as a parameter to the function 
@@ -291,19 +291,13 @@ function renderForecast(dailyForecast) {
   // now we will run a for loop that starts at zero and ends at the parameters length and will get there by stepping up one
   for (var i = 0; i < dailyForecast.length; i++) {
 
-
-
-
-
-    // next we run a conditional,
-
-    // First filters through all of the data and returns only data that falls between one day after the current data and up to 5 days later.
+    // next we run a conditional, if the daily forecast is greater than the start date and less than the end date 
     if (dailyForecast[i].dt >= startDt && dailyForecast[i].dt < endDt) {
 
-      // Then filters through the data and returns only data captured at noon for each day.
+      // a conditional within a conditional that wil tell us the time at noon
       if (dailyForecast[i].dt_txt.slice(11, 13) == "12") {
 
-        // this is our 9th step
+        // then we can run our next function ---> this is our 9th step
         renderForecastCard(dailyForecast[i]);
       }
     }
@@ -312,4 +306,102 @@ function renderForecast(dailyForecast) {
 
 //////////////////////////////////////////////////////
 
-// 
+// our 9th step is to create a function that holds our previous function data
+
+function renderForecastCard(forecast) {
+
+  // this will create variables using the data from the weather api
+  var iconUrl = `https://openweathermap.org/img/w/${forecast.weather[0].icon}.png`;
+  var iconDescription = forecast.weather[0].description;
+  var tempF = forecast.main.temp;
+  var humidity = forecast.main.humidity;
+  var windMph = forecast.wind.speed;
+
+  // now we need to create elements that will house our variables above
+  var col = document.createElement('div');
+  var card = document.createElement('div');
+  var cardBody = document.createElement('div');
+  var cardTitle = document.createElement('h5');
+  var weatherIcon = document.createElement('img');
+  var tempEl = document.createElement('p');
+  var windEl = document.createElement('p');
+  var humidityEl = document.createElement('p');
+
+  // this will create our styling on the page by appending the card to the column then the cardbody to the card and then the information in the cardbody
+  col.append(card);
+  card.append(cardBody);
+  cardBody.append(cardTitle, weatherIcon, tempEl, windEl, humidityEl);
+
+  // now we set attributes to the elements we created
+  col.setAttribute('class', 'col-md');
+  col.classList.add('five-day-card');
+  card.setAttribute('class', 'card bg-primary h-100 text-white');
+  cardBody.setAttribute('class', 'card-body p-2');
+  cardTitle.setAttribute('class', 'card-title');
+  tempEl.setAttribute('class', 'card-text');
+  windEl.setAttribute('class', 'card-text');
+  humidityEl.setAttribute('class', 'card-text');
+
+  // lastly we need to add text content to our card title with formatting
+  cardTitle.textContent = dayjs(forecast.dt_txt).format('M/D/YYYY');
+
+  // lets add some attributes our icon 
+  weatherIcon.setAttribute('src', iconUrl);
+  weatherIcon.setAttribute('alt', iconDescription);
+
+  // this will add text content using objects from the data
+  tempEl.textContent = `Temp: ${tempF} °F`;
+  windEl.textContent = `Wind: ${windMph} MPH`;
+  humidityEl.textContent = `Humidity: ${humidity} %`;
+
+  // lastly we add our col element to the global variable
+  forecastContainer.append(col);
+}
+
+//////////////////////////////////////////////////////
+
+// step 1 = we initialized the submit button for our location of choice
+// step 2 = was a fetch request to get the location data
+// step 3 = was a fetch request to get the locations weather data
+// step 4 = was to append our search to local history
+// step 5 = was a function that called step 6 and step 7
+// step 6 = was to render a past search list
+// step 7 = was to display the current weather using api data
+// step 8 = was to display the forecast using api data
+// step 9 = was to render a place to put the forecast
+
+// okay so here we are in our last couple steps
+
+// add functionality to our past searches
+
+//////////////////////////////////////////////////////
+
+// Function to get search history from local storage
+function initSearchHistory() {
+  var storedHistory = localStorage.getItem('search-history');
+  if (storedHistory) {
+    searchHistory = JSON.parse(storedHistory);
+  }
+  renderSearchHistory();
+}
+
+
+//////////////////////////////////////////////////////
+
+function handleSearchHistoryClick(e) {
+  // Don't do search if current elements is not a search history button
+  if (!e.target.matches('.btn-history')) {
+    return;
+  }
+
+  var btn = e.target;
+  var search = btn.getAttribute('data-search');
+  fetchCoords(search);
+}
+
+
+//////////////////////////////////////////////////////
+
+initSearchHistory();
+searchForm.addEventListener('submit', submitForm);
+searchHistoryContainer.addEventListener('click', handleSearchHistoryClick);
