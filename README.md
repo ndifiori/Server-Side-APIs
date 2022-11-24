@@ -19,4 +19,8 @@ Here is a preview of the deployed application.
 
 https://github.com/ndifiori/Server-Side-APIs
 
+https://ndifiori.github.io/Server-Side-APIs/
+
+
+
 
