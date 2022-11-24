@@ -226,23 +226,90 @@ function renderCurrentWeather(city, weather) {
   // this will now set attributes to our new elements
   card.setAttribute('class', 'card');
   cardBody.setAttribute('class', 'card-body');
+
+  // append cardy body to card
   card.append(cardBody);
 
+  // this will now set attributes to our new elements
   heading.setAttribute('class', 'h3 card-title');
   tempEl.setAttribute('class', 'card-text');
   windEl.setAttribute('class', 'card-text');
   humidityEl.setAttribute('class', 'card-text');
 
+  // this will add text content to our heading using the jquery shortcut 
   heading.textContent = `${city} (${date})`;
+
+  // add some atttributes to our new elements
   weatherIcon.setAttribute('src', iconUrl);
   weatherIcon.setAttribute('alt', iconDescription);
   weatherIcon.setAttribute('class', 'weather-img');
+
+  // put the weathericon under the heading
   heading.append(weatherIcon);
+
+  // amend some text content 
   tempEl.textContent = `Temp: ${tempF}°F`;
   windEl.textContent = `Wind: ${windMph} MPH`;
   humidityEl.textContent = `Humidity: ${humidity} %`;
+
+  // set our new variables under the cardbody
   cardBody.append(heading, tempEl, windEl, humidityEl);
 
   todayContainer.innerHTML = '';
   todayContainer.append(card);
 }
+
+//////////////////////////////////////////////////////
+
+// this is our 8th step that will display the 5 day forecast
+
+function renderForecast(dailyForecast) {
+
+  // this will create variables for start and end date with proper formatting
+  var startDt = dayjs().add(1, 'day').startOf('day').unix();
+  var endDt = dayjs().add(6, 'day').startOf('day').unix();
+
+  // this will create elements to store our forecasts
+  var headingCol = document.createElement('div');
+  var heading = document.createElement('h4');
+
+  // give our new variable attributes we want, a class for formatting
+  headingCol.setAttribute('class', 'col-12');
+
+  // add text to our new element
+  heading.textContent = '5-Day Forecast:';
+
+  // put the heading under neath the heading column
+  headingCol.append(heading);
+
+  // change the innerhtml of our variable that grabs a specific element
+  forecastContainer.innerHTML = '';
+
+  // this puts our new heading column under the forecastcontainer element
+  forecastContainer.append(headingCol);
+
+  // now we will run a for loop that starts at zero and ends at the parameters length and will get there by stepping up one
+  for (var i = 0; i < dailyForecast.length; i++) {
+
+
+
+
+
+    // next we run a conditional,
+
+    // First filters through all of the data and returns only data that falls between one day after the current data and up to 5 days later.
+    if (dailyForecast[i].dt >= startDt && dailyForecast[i].dt < endDt) {
+
+      // Then filters through the data and returns only data captured at noon for each day.
+      if (dailyForecast[i].dt_txt.slice(11, 13) == "12") {
+
+        // this is our 9th step
+        renderForecastCard(dailyForecast[i]);
+      }
+    }
+  }
+}
+
+//////////////////////////////////////////////////////
+
+// 
